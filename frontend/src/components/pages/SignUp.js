@@ -64,14 +64,14 @@ const SignupPage = () => {
 
     if (validate()) {
       // Submit form data (e.g., API call)
-      AxiosInstance.post(`register/`, {
+      AxiosInstance.post(`auth/users/`, {
         username: formData.username,
         email: formData.email,
         password: formData.password,
       })
         .then((res) => {
           console.log("setError before backend --------->", errors);
-          navigate("/");
+          navigate("/login");
         })
         .catch((error) => {
           console.log("backend error res---------->", error.response);

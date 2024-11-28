@@ -32,16 +32,22 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
 
+
+
+AUTH_USER_MODEL = 'core.User'
+
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    'AUTH_HEADER_TYPES': ('JWT',),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
@@ -57,7 +63,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
+    'djoser',
     'corsheaders',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -102,10 +110,10 @@ WSGI_APPLICATION = 'tracker.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Tracker',
+        'NAME': 'tracker',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD':'',
+        'PASSWORD':'root123',
     }
 }
 
@@ -153,3 +161,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Ensure session settings are configured
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create':'core.serializers.UserCreateSerializer',
+    }
+}
+
+

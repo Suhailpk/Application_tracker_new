@@ -19,6 +19,7 @@ function ProtectedRouter({ children }) {
                 refresh: refreshToken,
             });
             if (res.status === 200) {
+                console.log("access token ------------->", res.data.access)
                 localStorage.setItem(ACCESS_TOKEN, res.data.access)
                 setIsAuthorized(true)
             } else {
@@ -32,6 +33,7 @@ function ProtectedRouter({ children }) {
 
     const auth = async () => {
         const token = localStorage.getItem(ACCESS_TOKEN);
+        console.log("token from protected routers --------->", token)
         if (!token) {
             setIsAuthorized(false);
             return;
@@ -51,7 +53,7 @@ function ProtectedRouter({ children }) {
         return <div>Loading...</div>;
     }
 
-    return isAuthorized ? children : <Navigate to="/login" />;
+    return isAuthorized ? children : <Navigate to="/comapny_intro" />;
 }
 
 export default ProtectedRouter;

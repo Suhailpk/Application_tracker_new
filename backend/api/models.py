@@ -1,23 +1,22 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
+from django.conf import settings
 
 # Create your models here.
 
-class UserDetails(models.Model):
-    username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(max_length=100, unique=True)
-    password = models.CharField(max_length=128)
+class Customer(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
+    date_of_birth = models.DateField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        if self.password and not self.password.startswith('pbkdf2_sha256$'):
-            self.password = make_password(self.password)
-        super(UserDetails, self).save(*args, **kwargs)
 
 class Company(models.Model):
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     website = models.CharField(max_length=100)
     industry = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class JobApplication(models.Model):
 
@@ -28,14 +27,17 @@ class JobApplication(models.Model):
         ('RE', 'Rejected'),
     ]
 
-    user = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
-    company = models.ManyToManyField(Company)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     position = models.CharField(max_length=100)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='AP')
-    date_applied = models.DateField(auto_created=True)
+    date_applied = models.DateField(auto_now_add=True)
     modified = models.DateField(auto_now_add=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     comments = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.position
 
 
 class Reminder(models.Model):

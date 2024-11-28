@@ -34,7 +34,7 @@ const Login = () => {
     console.log("username -------->", formData.username)
     console.log("password -------->", formData.password)
 
-    AxiosInstance.post("/api/token/", {
+    AxiosInstance.post(`auth/jwt/create/`, {
       username: formData.username,
       password: formData.password,
     })
@@ -44,7 +44,7 @@ const Login = () => {
         console.log("response is data refresh---------->", res.data.refresh);
         localStorage.setItem(ACCESS_TOKEN, res.data.access)
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh)
-        navigate(`/navbar`);
+        navigate(`/`);
       })
       .catch((error) => {
         console.log("errors are ------>", error)
