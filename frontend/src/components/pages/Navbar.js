@@ -11,22 +11,18 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
-import { Link, useLocation } from "react-router-dom";
 import AccountMenu from "../forms/AccountMenu";
-import AxiosInstance from "../api";
-import ApplicationList from "./ApplicationList";
+import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
 export default function Navbar(props) {
-  const { content } = props;
+  const { content } = props;  // "content" is passed as the dynamic route component.
+  const navigate = useNavigate();
 
-  const location = useLocation();
-  const path = location.pathname;
-
-  // AxiosInstance.get(`home/`).then((res) => {
-  //   console.log("respone is ----------->", res);
-  // });
+  const handleHomeNavigate = ()=>{
+    navigate('/')
+  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -39,9 +35,10 @@ export default function Navbar(props) {
           <Typography variant="h6" noWrap component="div">
             Application Tracker
           </Typography>
-          <AccountMenu/>
+          <AccountMenu /> {/* Account menu component (probably user profile and logout) */}
         </Toolbar>
       </AppBar>
+
       <Drawer
         variant="permanent"
         sx={{
@@ -61,19 +58,16 @@ export default function Navbar(props) {
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
-                <ListItemText primary={"Home"} />
+                <ListItemText primary={"Home"} onClick={handleHomeNavigate}/>
               </ListItemButton>
             </ListItem>
           </List>
         </Box>
       </Drawer>
+
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
-        {content}
-        <Typography variant="h5" component={'div'} noWrap sx={{color:'green'}}>
-          Recent Application
-        </Typography>
-        <ApplicationList />
+        {content}  {/* Dynamic content passed from Layout component */}
       </Box>
     </Box>
   );

@@ -25,9 +25,13 @@ def test(request):
 
 
 class AddNewApplicationViewSet(ModelViewSet):
-    queryset = JobApplication.objects.all()
     serializer_class = AddNewApplicationSerailzer
     permission_classes = [IsAuthenticated] 
+
+    def get_queryset(self):
+        data = JobApplication.objects.filter(user_id=self.request.user.pk)
+        data = data.order_by('-modified')
+        return data
 
     def get_serializer_context(self):
         user_id = self.request.user.id

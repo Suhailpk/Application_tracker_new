@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import AxiosInstance from "../api";
 import { useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN,REFRESH_TOKEN } from "../../constants";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Login = () => {
     username: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}); // For both field-specific and general errors
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -26,38 +26,43 @@ const Login = () => {
       ...prevData,
       [name]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "", // Clear field-specific error on change
+      general: "", // Clear general error on input
+    }));
   };
 
   const submission = (e) => {
     e.preventDefault();
-
-    console.log("username -------->", formData.username)
-    console.log("password -------->", formData.password)
 
     AxiosInstance.post(`auth/jwt/create/`, {
       username: formData.username,
       password: formData.password,
     })
       .then((res) => {
-        console.log("response is ---------->", res);
-        console.log("response is data access---------->", res.data.access);
-        console.log("response is data refresh---------->", res.data.refresh);
-        localStorage.setItem(ACCESS_TOKEN, res.data.access)
-        localStorage.setItem(REFRESH_TOKEN, res.data.refresh)
+        console.log("Response:", res);
+        localStorage.setItem(ACCESS_TOKEN, res.data.access);
+        localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
         navigate(`/`);
       })
       .catch((error) => {
-        console.log("errors are ------>", error)
+        console.error("Error:", error);
+
         if (error.response && error.response.data) {
-          // Check if the error is a form validation error from the backend
-          if (error.response.data.error) {
-            setErrors({ general: error.response.data.error });
-          } else {
-            setErrors(error.response.data);
-          }
+          // Handle backend errors
+          const backendErrors = error.response.data;
+          setErrors({
+            username: backendErrors.username || "",
+            password: backendErrors.password || "",
+            general:
+              backendErrors.detail || // JWT authentication errors
+              backendErrors.non_field_errors || // Django Rest Framework non-field errors
+              "An error occurred. Please try again.", // Fallback error
+          });
         } else {
           setErrors({
-            general: "An unexpected error occurred. Please try again.",
+            general: "Unable to connect to the server. Please try again later.",
           });
         }
       });
@@ -75,6 +80,7 @@ const Login = () => {
       </Box>
 
       <Box component="form" onSubmit={submission} noValidate sx={{ mt: 2 }}>
+        {/* General error message */}
         {errors.general && (
           <Typography color="error" sx={{ mb: 2 }}>
             {errors.general}

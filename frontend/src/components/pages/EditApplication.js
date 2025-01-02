@@ -151,7 +151,7 @@ const EditApplication = () => {
         fullWidth 
         sx={{ mt: 3, fontWeight: 'bold' }}
       >
-        Add New Application
+        Edit Application
       </Button>
     </Box>
   );

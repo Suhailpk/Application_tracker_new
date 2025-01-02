@@ -53,7 +53,7 @@ function ProtectedRouter({ children }) {
         return <div>Loading...</div>;
     }
 
-    return isAuthorized ? children : <Navigate to="/comapny_intro" />;
+    return isAuthorized ? children : <Navigate to="/company_intro" />;
 }
 
 export default ProtectedRouter;
