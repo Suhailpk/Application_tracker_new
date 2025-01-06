@@ -1,0 +1,55 @@
+version: '3.3'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: django_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=tracker.settings
+      - DATABASE_URL=mysql://root:root123@db:3306/tracker
+    command: python manage.py runserver 0.0.0.0:8000  # Ensure Django binds to all interfaces
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: react_frontend
+    ports:
+      - "3000:3000"  # Corrected to ensure React dev server matches its default port
+    volumes:
+      - ./frontend:/app
+    stdin_open: true  # Optional for interactive debugging
+    tty: true  # Optional for interactive debugging
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:1.27.3
+    container_name: nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html  # Mount React build files in the correct location
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Mount custom Nginx config
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8
+    container_name: mysql_db
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root123  # Set the root password here
+      - MYSQL_DATABASE=tracker  # Automatically create the 'tracker' database
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
