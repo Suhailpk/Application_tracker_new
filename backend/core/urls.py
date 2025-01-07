@@ -1,8 +1,14 @@
 from rest_framework.routers import DefaultRouter
-from django.urls import path
-from .views import PasswordResetViewSet
+from django.urls import path, include
+from .views import ChangePasswordViewSet, OTPRequestViewset, OTPVerifyViewSet
 
 
-urlpatterns = [     
-    path('password-reset/', PasswordResetViewSet.as_view(), name='password_reset'),      
-        ]
+router = DefaultRouter()
+router.register(r'otp-request', OTPRequestViewset, basename='otp-request')
+router.register(r'otp-verify', OTPVerifyViewSet, basename='otp-verify')
+router.register(r'change-password', ChangePasswordViewSet, basename='change-password')
+
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
