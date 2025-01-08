@@ -15,6 +15,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,10 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--jsdxfuo#=aea!10a*lg!41vs=^mgi*8ueop&q@0u_0m(tu26!'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', 'False') == 'True'
+SECRET_KEY = config('SECRET_KEY', 'fallback-secret-key')
 
 ALLOWED_HOSTS = ["*"]
 
@@ -56,8 +55,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'  # This is the literal string "apikey"
-EMAIL_HOST_PASSWORD = 'your api key'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # This is the literal string "apikey"
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 
 
@@ -74,7 +73,33 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'core',
+    'reminder',
 ]
+
+
+# Celery Configuration Options
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Using Redis as the message broker
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+# Celery Beat
+INSTALLED_APPS += ('django_celery_beat',)
+
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'test-task-every-minute': {
+        'task': 'reminder.tasks.test_task',
+        'schedule': crontab(minute='*'),  # Runs every minute
+    },
+    'reminder-notification': {
+        'task': 'reminder.tasks.send_reminder_notification',
+        'schedule': crontab(minute='*'),  # Runs every minute
+    },
+}
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -118,10 +143,10 @@ WSGI_APPLICATION = 'tracker.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tracker',
-        'HOST': 'localhost',
-        'USER': 'root',
-        'PASSWORD':'root123',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST', 'localhost'),
     }
 }
 

@@ -38,10 +38,3 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return self.position
-
-
-class Reminder(models.Model):
-    job_application = models.ForeignKey(JobApplication, on_delete=models.CASCADE)
-    reminder_date = models.DateTimeField()
-    message = models.TextField()
-    is_active = models.BooleanField(default=True)

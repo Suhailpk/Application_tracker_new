@@ -125,6 +125,13 @@ const Login = () => {
 
         <Grid container justifyContent="flex-end">
           <Grid item>
+            <Link href="/otp-request" variant="body2">
+              Forgot Password?
+            </Link>
+          </Grid>
+        </Grid>
+        <Grid container justifyContent="flex-end">
+          <Grid item>
             <Link href="/signup" variant="body2">
               Not have an account? Sign up
             </Link>

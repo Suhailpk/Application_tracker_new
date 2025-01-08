@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from core.models import User
+from reminder.models import Reminder
 # from django.contrib.auth.models import User
 
 
@@ -70,6 +71,11 @@ class AddNewApplicationSerailzer(serializers.ModelSerializer):
         job_application = JobApplication.objects.create(user_id=user_id, **validated_data)
         # Set the companies to the job application
         job_application.save()
+
+        Reminder.objects.create(
+            job_application = job_application,
+            user_id=user_id
+        )
 
         return job_application
     

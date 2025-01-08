@@ -77,6 +77,12 @@ const ForgotPasswordOtpVerify = () => {
 
   return (
     <Container>
+        <Box sx={{mt:4, textAlign:'center'}}>
+                    <Typography variant='h4'>
+                        Enter OTP
+                    </Typography>
+                </Box>
+
         <Box component="form" onSubmit={handleSumbmit}>
         {/* General error message */}
         {errors.general && (

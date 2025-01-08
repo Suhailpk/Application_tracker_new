@@ -1,6 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/pages/Login";
 import SignUp from "./components/pages/SignUp";
+import ForgotPasswordOtp from "./components/pages/ForgotPasswordOtp";
+import ForgotPasswordOtpVerify from "./components/pages/ForgotPasswordOtpVerify";
+import PasswordReset from "./components/pages/PasswordReset";
 import Layout from "./components/pages/Layout";
 import Home from "./components/pages/Home";
 import CompanyIntro from "./components/pages/CompanyIntro";
@@ -22,6 +25,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/otp-request" element={<ForgotPasswordOtp />} />
+        <Route path="/otp-verify" element={<ForgotPasswordOtpVerify />} />
+        <Route path="/password-reset" element={<PasswordReset />} />
         <Route path="/company_intro" element={<CompanyIntro />} />
 
         {/* Protected Routes */}
